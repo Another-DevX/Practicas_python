@@ -35,9 +35,7 @@ def send_email(dir,subject, bodyText, aptos):
 
                 destinatario = aptos[iterator]
                 archivo = (dir + str(archivos[iterator]))
-                #archivo2 = ('C://Users/Luis/source/repos/Email/Email/A2.pdf')
                 print(f'La celda actual es: {iterator + 2}')
-                #print (archivo1)
         
                 #Host y puerto SMTP de Gmail
                 gmail = smtplib.SMTP('smtp.gmail.com', 587)
@@ -78,8 +76,10 @@ def send_email(dir,subject, bodyText, aptos):
 
 
 if __name__ == '__main__':
+        #Aca va el nombre de el archivo de la base de datos, y la pagina en que se encuentra
         aptos = get_emailFromDatabase('BASE DE DATOS sol del rodeo.xlsx','Hoja1')
-        send_email('C://Users/Luis/Desktop/SolDelRodeoDic','Facturacion diciembre 2022','Descargue su factura',aptos)
+        #Direccion en donde se encuentran las facturas en formato pdf, Asunto email, mensaje email
+        send_email('C://Users/Luis/Desktop/SolDelRodeoDic/','Facturacion diciembre 2022','Descargue su factura',aptos)
 
 
 
