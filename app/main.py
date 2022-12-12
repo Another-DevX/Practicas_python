@@ -1,23 +1,17 @@
 import chart, util
-import util
+import pandas as pd
 
-def select_country(data):
-    search_country = input('Write your country').title()
-    country = list(filter(lambda iterator_country: iterator_country['Country/Territory'] == search_country ,data))
-    return country, search_country
+def get_country_wPercentage(data):
 
-def population_search(country):
-    country_items = country[0].items()
-    population_history = {key[0:4]:float(item) for (key, item) in country_items if  'Population' in key and 'World' not in key}
-    return(population_history)
-
-
-
-
-if __name__ == '__main__':
-    data = util.read_csv('world_population.csv')
-    country, search_country = select_country(data)
-    population = population_search(country)
-    chart.generate_bar_chart(search_country,list(population.keys()),list(population.values()))
+    df = pd.read_csv(f"{data}.csv") #Conseguimos el dataframe
+    region = 'South America'
+    #Iteramos en el dataframe los diccionarios si tienen South America en el key Continent
+    df = df[df['Continent'] == region]  
+    #Enlistamos los values de los key Country del dataframe
+    countries = df['Country/Territory'].values #Similar a map()
+    #Enlistamos los values de los key World... del dataframe
+    percentages = df['World Population Percentage'].values
+    chart.generate_pie_chart(region, countries, percentages)
     
-
+if __name__ == '__main__':
+  get_country_wPercentage('world_population')
