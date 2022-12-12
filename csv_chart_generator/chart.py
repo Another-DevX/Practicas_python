@@ -1,12 +1,10 @@
 
-# %%
 import matplotlib.pylab as plt
-import numpy as np
 
-# %% 
-
-def generate_bar_chart(labels, values):
+def generate_bar_chart(name, labels, values):
   fig, ax = plt.subplots()
   ax.bar(labels, values)
-  plt.show()
+  plt.title(name)
+  plt.savefig(f'./imgs/{name}.png')
+  plt.close()  
 

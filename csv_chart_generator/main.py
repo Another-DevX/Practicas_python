@@ -1,10 +1,11 @@
 import chart, util
-import util
+
 
 def select_country(data):
+
     search_country = input('Write your country').title()
     country = list(filter(lambda iterator_country: iterator_country['Country/Territory'] == search_country ,data))
-    return country
+    return country, search_country
 
 def population_search(country):
     country_items = country[0].items()
@@ -15,9 +16,9 @@ def population_search(country):
 
 
 if __name__ == '__main__':
-    data = util.read_csv('../csv_chart_generator/world_population.csv')
-    country = select_country(data)
+    data = util.read_csv('world_population.csv')
+    country, search_country = select_country(data)
     population = population_search(country)
-    chart.generate_bar_chart(list(population.keys()),list(population.values()))
+    chart.generate_bar_chart(search_country,list(population.keys()),list(population.values()))
     
 

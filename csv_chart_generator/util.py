@@ -11,5 +11,5 @@ def read_csv(path):
             data.append(country_dict)
         return data
 if __name__ == '__main__':
-    data = read_csv('../csv_chart_generator/world_population.csv')
+    data = read_csv('world_population.csv')
     print(data)
