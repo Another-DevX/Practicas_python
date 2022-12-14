@@ -6,7 +6,7 @@ from enum import Enum
 from pydantic import BaseModel, Field, EmailStr, PaymentCardNumber
 
 #FastApi
-from fastapi import FastAPI, Body, Query, Path
+from fastapi import FastAPI, status, Body, Query, Path, Form
 
 
 app = FastAPI()
@@ -34,55 +34,76 @@ class Location(BaseModel):
         min_length = 3,
         max_length = 12)
 
-
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name: str = Field(
-        ...,
-        min_length = 1,
-        max_length = 50 
-        )
+    ...,
+    min_length = 1,
+    max_length = 50,
+    example="Luis" 
+    )
     last_name: str = Field(
-                ...,
-        min_length = 1,
-        max_length = 50 
+            ...,
+    min_length = 1,
+    max_length = 50,
+    example="Martinez" 
     )
     age: int = Field(
-        ...,
-        gt = 0,
-        le = 115
+    ...,
+    gt = 0,
+    le = 115,
+    example="17"
     )
-    mail: EmailStr = Field()
-    creditCar: PaymentCardNumber = Field()
-    hair_color: Optional[HairColor] = Field(default = None) 
-    isMarried: Optional[bool] = Field(default = None)
-    
-    class Config():
-        schema_extra = {
-            "example": {
-                "first_name" : "Luis",
-                "last_name" : "Velasquez",
-                "age" : 17,
-                "mail" : "xyz@gmail.com",
-                "creditCar" : 1234567890123,
-                "hair_color" : "black",
-                "isMarried" : False
-            }
-        }
+    mail: EmailStr = Field(
+        ...,
+        example="a@b.c"
+        )
+    hair_color: Optional[HairColor] = Field(
+        default = None,
+        example="white"
+        ) 
+    isMarried: Optional[bool] = Field(
+        default = None,
+        example=False
+        )
 
-@app.get("/")
+class Person(PersonBase):
+    password: str = Field(...,
+                          min_length=8)
+
+class PersonOut(PersonBase):
+    pass
+
+class LoginOut(BaseModel):
+    username:str = Field(
+        ...,
+        max_length=20,
+        example = "Lokochris37"
+        )
+
+@app.get(
+    path="/", 
+    status_code=status.HTTP_200_OK
+    )
 def home():
     return {"Hello":"World"}
 
 
 #Request and Response Body
 
-@app.post("/person/new")
+@app.post(
+    path="/person/new",
+    response_model=PersonOut,
+    status_code=status.HTTP_201_CREATED
+    )
 def create_person(person: Person = Body()):
     return person
 
 #Validaciones: Query Parameters
 
-@app.get("/person/detail")
+@app.get(
+    path="/person/detail",
+    status_code=status.HTTP_200_OK
+    )
 def show_person(
     name: Optional[str] = Query(
         None, 
@@ -102,7 +123,10 @@ def show_person(
 
 #Validaciones: Path Parameters
 
-@app.get("/persons/detail/{person_id}")
+@app.get(
+    path="/persons/detail/{person_id}",
+    status_code=status.HTTP_200_OK
+    )
 def show_person(
     person_id: int = Path(
         ...,
@@ -116,7 +140,10 @@ def show_person(
 
 #Validacions: request body
 
-@app.put("/person/{person_id}")
+@app.put(
+    path="/person/{person_id}",
+    status_code=status.HTTP_200_OK
+    )
 def update_person(
     person_id: int = Path(
         ...,
@@ -133,3 +160,10 @@ def update_person(
     return results
 
 
+@app.post(
+    path="/login",
+    response_model=LoginOut,
+    status_code=status.HTTP_200_OK
+)
+def login(username: str = Form(), password: str = Form()):
+    return  LoginOut(username=username)
