@@ -68,7 +68,7 @@ class PersonBase(BaseModel):
 
 class Person(PersonBase):
     password: str = Field(...,
-                          min_length=8)
+                          min_length=8)c
 
 class PersonOut(PersonBase):
     pass
